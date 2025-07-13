@@ -226,8 +226,8 @@ void lcdInit(TFT_t * dev, int width, int height, int offsetx, int offsety, bool 
 	spi_master_write_command(dev, 0x20);	//Display Inversion Off 
 
 	spi_master_write_command(dev, 0x36);	//Memory Data Access Control 
-	spi_master_write_data_byte(dev, 0xC8);	//BGR color filter panel
-	//spi_master_write_data_byte(dev, 0xC0);	//RGB color filter panel
+	// spi_master_write_data_byte(dev, 0xC8);	//BGR color filter panel
+	spi_master_write_data_byte(dev, 0xC0);	//RGB color filter panel
 
 	spi_master_write_command(dev, 0x3A);	//Interface Pixel Format
 	spi_master_write_data_byte(dev, 0x05);	//16-bit/pixel 65K-Colors(RGB 5-6-5-bit Input)
@@ -244,7 +244,7 @@ void lcdInit(TFT_t * dev, int width, int height, int offsetx, int offsety, bool 
 	spi_master_write_data_byte(dev, 0x00);
 	spi_master_write_data_byte(dev, 0xA0);
 
-	spi_master_write_command(dev, 0x21);	//Display Inversion On
+	// spi_master_write_command(dev, 0x21);	//Display Inversion On
 
 	spi_master_write_command(dev, 0xE0);	//Gamma (‘+’polarity) Correction Characteristics Setting
 	spi_master_write_data_byte(dev, 0x02);
