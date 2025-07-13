@@ -15,7 +15,7 @@ idf.py -p PORT flash
 
 ## TFT display
 
-- 1.8 TFT ST7735 display
+- 1.8 TFT 128x160 LCD display (ST7735)
 
 ![tft display](tft-1-8-st7735s.png)
 
@@ -24,6 +24,19 @@ idf.py -p PORT flash
 - ESP32-C3-mini-1
 
 ![esp32-c3-mini-1](esp32-c3-mini-1.png)
+
+## Connections
+
+| 1.8 TFT           | ESP32-C3 |
+|-------------------|----------|
+| LED / Backlight   | 3.3v     |
+| SCK / SPI clock   | IO6      |
+| SDA / SPI data    | IO7      |
+| A0 / Data command | IO4      |
+| Reset             | RST      |
+| CS / Chip select  | IO10     |
+| GND / Ground      | Ground   |
+| VCC               | 3.3v     |
 
 ## Original README
 
