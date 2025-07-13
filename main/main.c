@@ -20,26 +20,25 @@
 #include "decode_png.h"
 #include "pngle.h"
 
-// M5stickC stuff
-#define CONFIG_WIDTH 80
+#define CONFIG_WIDTH 128
 #define CONFIG_HEIGHT 160
-#define OFFSET_X 26
-#define OFFSET_Y 1
-#define GPIO_MOSI 15
-#define GPIO_SCLK 13
-#define GPIO_CS 5
-#define GPIO_DC 23
-#define GPIO_RESET 18
+#define OFFSET_X 0
+#define OFFSET_Y 0
+#define GPIO_MOSI 7
+#define GPIO_SCLK 6
+#define GPIO_CS 10
+#define GPIO_DC 4
+#define GPIO_RESET -1
 #define FRAME_BUFFER true
 
-#define INTERVAL 400
+#define INTERVAL 200
 
 #define WAIT vTaskDelay(INTERVAL)
 
 //If you want to continue by push button, enable this line.
 //#define WAIT waitButton()
 
-static const char *TAG = "M5StickC";
+static const char *TAG = "esp32c3";
 
 #if 0
 // wait until button push
@@ -157,7 +156,7 @@ TickType_t HorizontalTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	//lcdFillScreen(dev, WHITE);
 	lcdFillScreen(dev, BLACK);
 	uint8_t ascii[20];
-	strcpy((char *)ascii, " M5StickC ");
+	strcpy((char *)ascii, " esp32c3");
 
 	color = RED;
 	lcdSetFontDirection(dev, 0);
@@ -209,7 +208,7 @@ TickType_t VerticalTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	//lcdFillScreen(dev, WHITE);
 	lcdFillScreen(dev, BLACK);
 	uint8_t ascii[20];
-	strcpy((char *)ascii, " M5StickC ");
+	strcpy((char *)ascii, " esp32c3");
 
 	color = RED;
 	lcdSetFontDirection(dev, 1);
@@ -865,7 +864,6 @@ void tft(void *pvParameters)
 
 	while (1) {
 		ESP_LOGD(TAG, "Mainloop Start");
-		AXP192_ScreenBreath(15);
 
 		FillTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
@@ -950,14 +948,6 @@ void tft(void *pvParameters)
 		xpos = CONFIG_WIDTH-(24 * 2);
 		strcpy((char *)ascii, " Fade Out...");
 		lcdDrawString(&dev, fx24, xpos, 0, ascii, color);
-
-		int Brightness = 15;
-		while(1){
-			AXP192_ScreenBreath(Brightness);
-			vTaskDelay(50);
-			Brightness--;
-			if (Brightness == 5) break;
-		}
 
 #if 0
 		while(1) {
@@ -1054,15 +1044,6 @@ void app_main(void)
 
 	ESP_ERROR_CHECK(mountSPIFFS("/images", "storage2", 1));
 	listSPIFFS("/images");
-
-	// power on
-	i2c_master_init();
-	AXP192_PowerOn();
-
-	// set the GPIO as a input
-	//gpio_pad_select_gpio(GPIO_NUM_37);
-	gpio_reset_pin(GPIO_NUM_37);
-	gpio_set_direction(GPIO_NUM_37, GPIO_MODE_DEF_INPUT);
 
 	xTaskCreate(tft, "TFT", 4096, NULL, 2, NULL);
 }

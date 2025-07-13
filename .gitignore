@@ -1,0 +1,8 @@
+.vscode
+.cache
+build/
+sdkconfig
+sdkconfig.old
+.pytest_cache/
+managed_components/
+.DS_Store

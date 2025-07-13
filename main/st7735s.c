@@ -3,6 +3,7 @@
 #include <string.h>
 #include <math.h>
 
+#include "driver/spi_common.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
@@ -17,10 +18,11 @@
 
 static const int SPI_Command_Mode = 0;
 static const int SPI_Data_Mode = 1;
-static const int SPI_Frequency = SPI_MASTER_FREQ_20M;
+// static const int SPI_Frequency = SPI_MASTER_FREQ_20M;
 //static const int SPI_Frequency = SPI_MASTER_FREQ_26M;
 //static const int SPI_Frequency = SPI_MASTER_FREQ_40M;
-//static const int SPI_Frequency = SPI_MASTER_FREQ_80M;
+static const int SPI_Frequency = SPI_MASTER_FREQ_80M;
+static const int SPI_Host = SPI2_HOST;
 
 void spi_master_init(TFT_t * dev, int16_t GPIO_MOSI, int16_t GPIO_SCLK, int16_t GPIO_CS, int16_t GPIO_DC, int16_t GPIO_RESET)
 {
@@ -34,11 +36,13 @@ void spi_master_init(TFT_t * dev, int16_t GPIO_MOSI, int16_t GPIO_SCLK, int16_t 
 	gpio_set_direction( GPIO_DC, GPIO_MODE_OUTPUT );
 	gpio_set_level( GPIO_DC, 0 );
 
-	gpio_reset_pin( GPIO_RESET );
-	gpio_set_direction( GPIO_RESET, GPIO_MODE_OUTPUT );
-	gpio_set_level( GPIO_RESET, 0 );
-	vTaskDelay( pdMS_TO_TICKS( 100 ) );
-	gpio_set_level( GPIO_RESET, 1 );
+	if(GPIO_RESET > -1) {
+		gpio_reset_pin( GPIO_RESET );
+		gpio_set_direction( GPIO_RESET, GPIO_MODE_OUTPUT );
+		gpio_set_level( GPIO_RESET, 0 );
+		vTaskDelay( pdMS_TO_TICKS( 100 ) );
+		gpio_set_level( GPIO_RESET, 1 );
+	}
 
 	spi_bus_config_t buscfg = {
 		.sclk_io_num = GPIO_SCLK,
@@ -48,7 +52,7 @@ void spi_master_init(TFT_t * dev, int16_t GPIO_MOSI, int16_t GPIO_SCLK, int16_t 
 		.quadhd_io_num = -1
 	};
 
-	ret = spi_bus_initialize( HSPI_HOST, &buscfg, 1 );
+	ret = spi_bus_initialize( SPI_Host, &buscfg,  SPI_DMA_CH_AUTO);
 	ESP_LOGD(TAG, "spi_bus_initialize=%d",ret);
 	assert(ret==ESP_OK);
 
@@ -60,7 +64,7 @@ void spi_master_init(TFT_t * dev, int16_t GPIO_MOSI, int16_t GPIO_SCLK, int16_t 
 	};
 
 	spi_device_handle_t handle;
-	ret = spi_bus_add_device( HSPI_HOST, &devcfg, &handle);
+	ret = spi_bus_add_device( SPI_Host, &devcfg, &handle);
 	ESP_LOGD(TAG, "spi_bus_add_device=%d",ret);
 	assert(ret==ESP_OK);
 	dev->_dc = GPIO_DC;
