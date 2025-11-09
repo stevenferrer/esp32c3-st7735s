@@ -2,6 +2,8 @@
 
 Fork of [nopnop2002/esp-idf-m5stickC](https://github.com/nopnop2002/esp-idf-m5stickC) (with minimal change) that uses ESP32-C3-mini-1 and 1.8 TFT display.
 
+![esp32c3-st7335](esp32c3-st7735.png)
+
 ## Requirements
 
 - [esp-idf](https://github.com/espressif/esp-idf) v5.x
